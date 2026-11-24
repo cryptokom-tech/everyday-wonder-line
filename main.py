@@ -36,6 +36,17 @@ def main() -> int:
         f"entry length {len(written)} is outside 1-200 characters"
     )
     assert written.strip(), "entry is whitespace-only"
+    # Single-sentence shape: one line only, no trailing whitespace, and the
+    # UTF-8 byte length matches the character count (the entry is plain
+    # ASCII, so bytes == chars; any multibyte surprise fails loudly here).
+    assert "\n" not in written and "\r" not in written, (
+        "entry must be a single line"
+    )
+    assert written == written.rstrip(), "entry has trailing whitespace"
+    assert len(written.encode("utf-8")) == len(written), (
+        f"entry UTF-8 byte length {len(written.encode('utf-8'))} "
+        f"!= character count {len(written)}"
+    )
     return 0
 
 
